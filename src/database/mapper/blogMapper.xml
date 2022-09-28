@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="blogMapper">
+
+    <select id="getBlogs">
+    SELECT * FROM 
+    iw_blogs WHERE 
+    is_deleted = 'N' AND
+    is_visible = 't'
+        <if test="blogSeq != null">
+        AND blog_seq = #{blogSeq}
+        </if>
+    </select>
+
+    <insert id="insert">
+        INSERT INTO iw_blogs
+        ( blog_seq
+        , title
+        , content
+        , thumbnail_seq
+        , is_visible
+        , is_deleted
+        , created_date
+        , created_by
+        , url
+        , contentType
+        )
+        VALUES
+        ( #{blogSeq}
+        , #{title}
+        , #{content}
+        , #{thumbnailSeq}
+        , #{isVisible}
+        , 'N'
+        , now()
+        , ''
+        , #{url}
+        , #{contentType}
+        )
+    </insert>
+
+    <update id="update">
+        UPDATE iw_blogs 
+        SET updated_date = now()
+            , updated_by = '',
+            <if test="title != null and title != ''">
+            , title = #{title}
+            </if>
+            <if test="content != null and content != ''">
+            , content = #{content}
+            </if>
+            <if test="thumbnailSeq != null and thumbnailSeq != ''">
+            , thumbnail_seq = #{thumbnailSeq}
+            </if>
+            <if test="isVisible != null and isVisible != ''">
+            , is_visible = #{isVisible}
+            </if>
+        WHERE blog_seq = #{blogSeq}
+    </update>
+
+    <update id="deleted">
+        UPDATE iw_blogs 
+            SET is_deleted = 'Y'
+        WHERE blog_seq = #{blog_seq}
+    </update>
+
+</mapper>

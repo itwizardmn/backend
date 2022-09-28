@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="teamMapper">
+
+    <select id="selectTeams">
+        SELECT *
+        FROM iw_teams
+        WHERE is_deleted = 'N'
+            AND use_yn = 'Y'
+            <if test="teamSeq != null and teamSeq != ''">
+            AND seq = #{teamSeq}
+            </if>
+        ORDER BY sort ASC
+    </select>
+
+    <select id="getJobAds">
+        SELECT *
+        FROM iw_job_ad
+        WHERE is_deleted = 'N'
+            AND use_yn = 'Y'
+            <if test="seq != null and seq != ''">
+            AND seq = #{seq}
+            </if>
+    </select>
+
+    <insert id="insert">
+        INSERT INTO iw_teams
+        ( team_name
+        , is_deleted
+        , use_yn
+        , created_date
+        , created_by
+        )
+        VALUES
+        ( #{team_name}
+        ,'N'
+        , 'Y'
+        , now()
+        , ''
+        )
+    </insert>
+
+    <insert id="addJobAd">
+        INSERT INTO iw_job_ad
+        ( title
+        , jobType
+        , levels
+        , salary
+        , requirement
+        , roles
+        , about
+        )
+        VALUES
+        ( #{title}
+        , #{jobType}
+        , #{levels}
+        , #{salary}
+        , #{requirement}
+        , #{roles}
+        , #{about}
+        )
+    </insert>
+
+    <update id="updateJobAd">
+        UPDATE iw_job_ad
+        SET
+        title = #{title},
+        jobType = #{jobType},
+        levels = #{levels},
+        salary = #{salary},
+        requirement = #{requirement},
+        roles = #{roles},
+        about = #{about}
+        WHERE seq = #{seq}
+    </update>
+
+    <update id="deleteAd">
+        UPDATE iw_job_ad 
+            SET is_deleted = 'Y',
+            use_yn = 'N'
+        WHERE seq = #{seq}
+    </update>
+
+    <update id="update">
+        UPDATE iw_teams 
+        SET updated_date = now()
+            , updated_by = ''
+            <if test="team_name != null and team_name != ''">
+            , team_name = #{team_name}
+            </if>
+            <if test="sort != null and sort != ''">
+            , sort = #{sort}
+            </if>
+        WHERE seq = #{seq}
+    </update>
+
+    <update id="delete">
+        UPDATE iw_teams 
+            SET is_deleted = 'Y'
+        WHERE seq = #{seq}
+    </update>
+
+</mapper>

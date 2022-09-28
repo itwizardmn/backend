@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="projectMapper">
+
+    <select id="getProjectsByTeam">
+        SELECT P.* , F.download_url
+        FROM iw_projects P
+        LEFT JOIN iw_file F 
+            ON F.seq = P.file_seq
+            AND F.is_deleted = 'N'
+        WHERE P.is_deleted = 'N'
+            AND P.use_yn = 'Y'
+            <if test="teamSeq != null and teamSeq != ''">
+            AND P.team_seq = #{teamSeq}
+            </if>
+        ORDER BY P.seq DESC
+    </select>
+
+    <select id="getLists">
+        SELECT * FROM 
+        ${db}
+    </select>
+
+    <insert id="insert">
+        INSERT INTO iw_projects
+        ( team_seq
+        , project_name
+        , file_seq
+        , project_type
+        , related_url
+        , is_deleted
+        , use_yn
+        , created_date
+        , created_by
+        )
+        VALUES
+        ( #{teamSeq}
+        , #{projectName}
+        , #{fileSeq}
+        , #{projectType}
+        , #{relatedUrl}
+        ,'N'
+        , 'Y'
+        , now()
+        , ''
+        )
+    </insert>
+
+    <update id="updateProperty">
+        UPDATE iw_projects 
+        <set>
+            updated_date = now(),
+            <if test="related_url != null"> related_url = #{related_url},</if>
+            <if test="team_seq != null"> team_seq = #{team_seq},</if>
+            <if test="project_name != null"> project_name = #{project_name},</if>
+            <if test="project_type != null"> project_type = #{project_type},</if>
+        </set>
+        WHERE seq = #{seq}
+    </update>
+
+    <update id="update">
+        UPDATE iw_teams 
+        SET updated_date = now()
+            , updated_by = '',
+            <if test="teamName != null and teamName != ''">
+            , team_name = #{teamName}
+            </if>
+        WHERE seq = #{seq}
+    </update>
+
+    <update id="updatePhoto">
+        UPDATE iw_projects 
+        <set>
+            updated_date = now(),
+            <if test="file != null"> file_seq = #{file}</if>
+        </set>
+        WHERE seq = #{seq}
+    </update>
+
+    <delete id="deleteProject">
+        DELETE from iw_projects
+        WHERE seq = #{seq}
+    </delete>
+
+    <update id="deleted">
+        UPDATE iw_teams 
+            SET is_deleted = 'Y'
+        WHERE seq = #{seq}
+    </update>
+
+</mapper>

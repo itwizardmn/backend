@@ -1,0 +1,274 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="userMapper">
+
+    <select id="selectUser">
+        SELECT *
+        FROM iw_users
+        WHERE user_id = #{user_id}
+    </select>
+
+    <insert id="insertUser">
+        INSERT INTO iw_users
+        ( user_id
+        , user_name
+        , password
+        , salt
+        )
+        VALUES
+        ( #{user_id}
+        , #{user_name}
+        , #{password}
+        , #{salt}
+        )
+    </insert>
+
+    <update id="updateUser">
+        UPDATE iw_users
+        <set>
+            <if test="user_name != null"> user_name=#{user_name},</if>
+            <if test="password != null"> password=#{password},</if>
+            <if test="text != null"> text=#{text},</if>
+        </set>
+        WHERE user_id = #{user_id}
+    </update>
+
+    <delete id="deleteUser">
+        DELETE FROM iw_users
+        WHERE user_id = #{user_id}
+    </delete>
+
+
+    <!-- employee begin -->
+    <select id="loginEmployee">
+        SELECT name,
+        email,
+        phone,
+        profile,
+        team_seq,
+        seq,
+        password,
+        pro_seq,
+        salt
+        FROM iw_employees
+        WHERE (email = #{email}
+        OR seq = #{email})
+        AND is_deleted = 'N'
+        AND use_yn = 'Y'
+    </select>
+
+    <select id="personalEmployee">
+        SELECT c.lastname, 
+        c.seq,
+        c.firstname, 
+        DATE_FORMAT(c.birthdate, "%Y-%m-%d") as birthdate,
+        c.phone, 
+        c.register, 
+        c.email, 
+        c.address, 
+        c.family, 
+        c.edu, 
+        c.lang, 
+        c.experience, 
+        c.personal, 
+        c.skill 
+        FROM iw_career as c 
+        INNER JOIN 
+        iw_employees as e 
+        ON c.seq = e.career_seq 
+        WHERE e.seq = #{seq}
+    </select>
+
+    <select id="selectVotes">
+        SELECT vote,
+        title,
+        content,
+        hidden,
+        status,
+        DATE_FORMAT(created_at, "%Y-%m-%d") as date,
+        case  	
+        when hidden > 0 then "Unknown"
+        else name
+        end as name
+        FROM iw_votes as v
+        INNER JOIN iw_employees as e
+        ON v.employee_seq = e.seq
+        <if test="seq != null">
+          WHERE employee_seq=#{seq}
+          AND hidden = 0
+        </if>
+    </select>
+
+    <insert id="insertVote">
+        INSERT INTO iw_votes
+        ( employee_seq,
+          vote,
+          title,
+          content,
+          hidden
+        )
+        VALUES
+        ( #{employee_seq},
+          #{vote},
+          #{title},
+          #{content},
+          #{hidden}
+        )
+    </insert>
+
+    <update id="updateUserProfile">
+        UPDATE iw_employees
+        <set>
+            <if test="profile != null"> profile=#{profile},</if>
+        </set>
+        WHERE seq = #{seq}
+    </update>
+
+    <insert id="insertEmployee">
+    INSERT INTO iw_employees
+    ( name,
+      email,
+      phone,
+      password,
+      salt,
+      approved,
+      team_seq,
+      pro_seq,
+      career_seq,
+      levels
+    )
+    VALUES
+    ( #{name},
+      #{email},
+      #{phone},
+      #{password},
+      #{salt},
+      #{approved},
+      #{team_seq},
+      #{pro_seq},
+      #{seq},
+      #{levels}
+    )
+    </insert>
+
+    <select id="selectProfessions">
+        SELECT 
+        * FROM 
+        iw_professions 
+    </select>
+
+    <select id="getEmployees">
+        SELECT ie.name, 
+        ie.team_seq, 
+        ie.seq, 
+        ie.profile,
+        ie.levels, 
+        it.team_name, 
+        ie.pro_seq, 
+        ip.pro_name, 
+        ie.sort
+        FROM iw_teams AS it RIGHT JOIN iw_employees AS ie ON it.seq = ie.team_seq
+        LEFT JOIN iw_professions AS ip ON ie.pro_seq = ip.seq
+        WHERE ie.is_deleted = 'N'
+        AND ie.use_yn = 'Y'
+        ORDER BY ie.sort ASC
+    </select>
+
+    <update id="deleteEmployee">
+        UPDATE iw_employees
+        SET is_deleted = 'Y',
+        use_yn = 'N'
+        WHERE seq = #{seq}
+    </update>
+
+    <update id="updateEmployeeCareer">
+        UPDATE iw_career
+        <set>
+            personal=#{personal},
+            <if test="lastname != null"> lastname=#{lastname},</if>
+            <if test="firstname != null"> firstname=#{firstname},</if>
+            <if test="birthdate != null"> birthdate=#{birthdate},</if>
+            <if test="phone != null"> phone=#{phone},</if>
+            <if test="register != null"> register=#{register},</if>
+            <if test="address != null"> address=#{address},</if>
+            <if test="family != null"> family=#{family},</if>
+            <if test="edu != null"> edu=#{edu},</if>
+            <if test="lang != null"> lang=#{lang},</if>
+            <if test="experience != null"> experience=#{experience},</if>
+            <if test="skill != null"> skill=#{skill},</if>
+        </set>
+        WHERE seq = #{seq}
+    </update>
+
+    <update id="updateEmployee">
+        UPDATE iw_employees
+        SET team_seq=${team_seq},
+        pro_seq=${pro_seq},
+        sort=${sort},
+        levels=#{levels}
+        WHERE seq = #{seq}
+    </update>
+
+    <update id="updateCareerStatus">
+        UPDATE iw_career
+        <set>
+            <if test="status != null"> status=#{status}</if>
+        </set>
+        WHERE seq = #{seq}
+    </update>
+
+    <update id="updateProfession">
+        UPDATE iw_professions
+        <set>
+            <if test="pro_name != null"> pro_name=#{pro_name}</if>
+        </set>
+        WHERE seq = #{seq}
+    </update>
+
+    <insert id="insertProfession">
+    INSERT INTO iw_professions
+    ( pro_name )
+    VALUES ( #{pro_name})
+    </insert>
+
+    <update id="deleteProfession">
+    DELETE FROM iw_professions
+    WHERE seq = ${seq}
+    </update>
+
+    <insert id="addCareer">
+    INSERT INTO iw_career
+    ( lastname,
+      firstname,
+      birthdate,
+      phone,
+      register,
+      email,
+      address,
+      family,
+      edu,
+      lang,
+      experience,
+      personal,
+      skill
+    )
+    VALUES
+    ( #{lastname},
+      #{firstname},
+      #{birthdate},
+      #{phone},
+      #{register},
+      #{email},
+      #{address},
+      #{family},
+      #{edu},
+      #{lang},
+      #{experience},
+      #{personal},
+      #{skill}
+    )
+    </insert>
+
+
+    <!-- employee end -->
+</mapper>

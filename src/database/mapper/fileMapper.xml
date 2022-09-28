@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="fileMapper">
+
+    <update id="insert">
+        INSERT INTO iw_file (
+            original_file_name,
+            file_name,
+            mime_type,
+            size,
+            file_type,
+            download_url,
+            file_ext,
+            is_deleted,
+            use_yn,
+            created_date,
+            created_by
+        ) VALUES (
+            #{originalFileName},
+            #{fileName},
+            #{mimeType},
+            #{size},
+            #{fileType},
+            #{downloadUrl},
+            #{fileExt},
+            'N',
+            'Y',
+            now(),
+            ''
+        ) 
+    </update>
+
+    <select id="getFileById">
+        SELECT *
+        FROM iw_file
+        WHERE is_deleted = 'N'
+            AND use_yn = 'Y'
+            AND seq = #{fileId}
+    </select>
+
+</mapper>
