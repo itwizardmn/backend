@@ -84,6 +84,52 @@ const login = async (req, res) => {
     }
   };
 
+  const updatePhoto = async (req, res) => {
+    let   requestData     =  new RequestData(req);
+    let   responseData    =  new ResponseData(requestData);
+
+    try {
+      if (req.file) {
+        const data = JSON.parse(requestData.body.data);
+          let fileResult = {};
+          if (!requestData.isConnected()) {
+          await requestData.start(true);
+        }
+
+        if (!requestData.isConnected()) {
+          await requestData.start(true);
+        }
+
+        requestData.setBodyValue('file', req.file);
+        fileResult = await FileModel.insertFile(requestData);
+
+        if(!fileResult){
+          responseData.setResponseCode(RESPONSE_CODE.FILE_ERROR);
+        }
+
+        requestData.setBodyValue('fileSeq', fileResult[0].insertId);
+        requestData.setBodyValue('seq', data.seq);
+        requestData.setBodyValue('photo', data.file_seq);
+
+        const FileResult = await UserModel.updatePhoto(requestData);
+        if (FileResult) {
+            responseData.setResponseCode(RESPONSE_CODE.SUCCESS);
+            responseData.setDataValue(RESPONSE_FIELD.DATA, fileResult[0].insertId);
+        }
+      }
+
+    } catch (e) {
+      console.log(e);
+      Logger.error(e.stack);
+      await requestData.error();
+      responseData.setResponseCode(RESPONSE_CODE.CONTACT_ADMIN);
+    }
+    finally {
+      await requestData.end(responseData.isSuccess());
+      res.send(responseData);
+    }
+  }
+
   const changeStatusResume = async (req, res) => {
     let   requestData     =  new RequestData(req);
     let   responseData    =  new ResponseData(requestData);
@@ -97,7 +143,7 @@ const login = async (req, res) => {
       }
       if (!requestData.isConnected()) {
             await requestData.start(true);
-        }
+      }
       let info = await EmployeeModel.updateStatusCareer(requestData);
 
       if (info.status == 'success') {
@@ -620,5 +666,6 @@ const login = async (req, res) => {
     deleteProfession,
     getEmployees,
     deleteEmployee,
-    updateEmployee
+    updateEmployee,
+    updatePhoto
   };

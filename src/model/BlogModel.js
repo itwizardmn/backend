@@ -7,7 +7,6 @@ const { NAMESPACE, DB_RESULT, DB_FIELD_NAME } = require('../common/Constant');
 const { EXPECTATION_FAILED } = require('http-status-codes');
 
 const getBlogs = async (requestData, id = null) => {
-
     let blogId = null;
     if(id != null) {
         blogId = id;
@@ -19,9 +18,10 @@ const getBlogs = async (requestData, id = null) => {
 
     try {
         const connection = requestData.getConnection();
+        console.log('==============', connection);
         const queryString = Query(NAMESPACE.BLOG, 'getBlogs', params);
-
-        const [dataSet] = await connection.query(queryString);
+        const [dataSet] = await connection.execute(queryString);
+        
         return dataSet;
     } catch (e) {
         Logger.error(e);
@@ -55,12 +55,11 @@ const insertBlog = async (requestData) => {
 
 
 const remove = async (requestData) => {
-    params = { blog_seq : requestData.getBodyValue('blog_seq')};
+    params = { blog_seq : requestData.getBodyValue('blogSeq')};
 
     try {
         const connection = requestData.getConnection();
         const queryString = Query(NAMESPACE.BLOG, 'deleted', params);
-        console.log(queryString, '================');
         const res = await connection.query(queryString);
         return res;
     } catch (e) {

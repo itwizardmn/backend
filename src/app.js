@@ -34,7 +34,6 @@ app.use(PostInteceptor);
 app.use(routes);
 //app.use(expressFileupload);
 
-
 const swaggerDocument = YAML.load(__dirname + '/swagger/swagger.yaml');
 app.use('api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 

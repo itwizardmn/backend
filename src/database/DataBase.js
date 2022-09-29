@@ -1,5 +1,5 @@
 // const mysql = require('mysql');
-const mysql   = require('mysql2/promise');
+const mysql   = require('mysql2');
 
 const pool = mysql.createPool({
     host: process.env.DB_HOST,
@@ -12,27 +12,10 @@ const pool = mysql.createPool({
     typeCast : true
 });
 
-pool.on('acquire', (connection) => {
-    console.log(`Connection ${connection.threadId} acquired`);
-});
-
-pool.on('enqueue', () => {
-    console.log(`Waiting for available connection slot`);
-});
-
-pool.on('release', (connection) => {
-    console.log(`Connection ${connection.threadId} released`);
-});
-
-pool.on('connection', () => {
-    console.log(`Connection pool created`);
-});
-
-pool.on('query', (query) => { console.log(query.sql) });
 
 const getPoolConnection = async () => {
     const connection = 
-        await pool.getConnection(async (err, conn) => {
+        await pool.promise().getConnection(async (err, conn) => {
             if (err) 
                 console.log(err);
             else
@@ -41,4 +24,7 @@ const getPoolConnection = async () => {
     return connection;
   }
 
-module.exports = getPoolConnection;
+module.exports =  {
+    getPoolConnection,
+    execute: (...params) => pool.execute(...params)
+}

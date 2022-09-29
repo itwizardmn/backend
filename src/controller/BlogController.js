@@ -17,10 +17,8 @@ const getBlogs = async (req, res) => {
     let responseData = new ResponseData(requestData);
 
     try {
-        if (!requestData.isConnected()) {
-            await requestData.start(true);
-        }
 
+        await requestData.start(true);
         const blogList = await BlogModel.getBlogs(requestData, requestData.getBodyValue('blogSeq'));
         responseData.setDataValue(RESPONSE_FIELD.DATA, blogList);
 

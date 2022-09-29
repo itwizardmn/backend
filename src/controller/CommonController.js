@@ -69,15 +69,6 @@ const download = async (req, res) => {
                     responseData.setResponseCode(RESPONSE_CODE.NO_DATA);
                     res.send(responseData);
                 }
-                
-                // await res.download(directoryPath + file[0].file_name , file[0].file_name , (err) => {
-                //     if (err) {
-                //         responseData.setResponseCode(RESPONSE_CODE.CONTACT_ADMIN);
-                //         res.send(responseData);
-                //     } else {
-                //         responseData.setResponseCode(RESPONSE_CODE.OK);
-                //     }
-                // });
             } else {
                 await requestData.error();
                 responseData.setResponseCode(RESPONSE_CODE.NO_DATA);
@@ -93,7 +84,9 @@ const download = async (req, res) => {
         await requestData.error();
         responseData.setResponseCode(RESPONSE_CODE.CONTACT_ADMIN);
         res.send(responseData);
-     }
+     } finally {
+        await requestData.end(responseData.isSuccess());
+    }
 };
 
 module.exports = {

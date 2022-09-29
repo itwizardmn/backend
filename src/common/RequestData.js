@@ -1,4 +1,4 @@
-const getPoolConnection = require('../database/DataBase');
+const dbConn = require('../database/DataBase');
 
 const { copyObject } = require('../lib/utils');
 const Util = require('../lib/utils');
@@ -76,7 +76,6 @@ class RequestData {
         this.setBodyValue(DFN_SIZE, pageSize);
         this.setBodyValue(DFN_SKIP, pageSkip);
         this.setBodyValue(DFN_PAGE, page);
-
         return page;
     };
 
@@ -90,10 +89,9 @@ class RequestData {
 
     start = async (transaction = false) => {
         this.transaction = transaction;
-
         this.connection = transaction;
-        this.connection = await getPoolConnection();
-        
+
+        this.connection = await dbConn.getPoolConnection();
         this.connected = this.connection !== null ? true : false;
 
         if(this.transaction === true) {
@@ -132,9 +130,9 @@ class RequestData {
     }
 
     rollback = async () => {
-        console.log(`rollback ------`, this.connection, this.connection.rollback);
+        console.log(`rollback ------`);
         await this.connection.rollback();
-            await this.release();
+        await this.release();
     }
 
     release = async () => {

@@ -1,6 +1,6 @@
 const { getLogger } = require('../lib/logger');
 const Logger = getLogger({ title: 'user model' });
-
+const EmployeeModel = require('./EmployeeModel');
 const Query = require('../database/Mybatis');
 const path = require('path');
 
@@ -214,6 +214,26 @@ const deleteUser = async (requestData) => {
     const res = await connection.query(statement);
     return res;
   }
+
+  const updatePhoto = async (requestData) => {
+
+    try {
+        const params = {
+            ['file'] : requestData.getBodyValue('fileSeq') != null ? requestData.getBodyValue('fileSeq') : '',
+            ['seq'] : requestData.getBodyValue('seq') != null ? requestData.getBodyValue('seq') : '',
+            ['photo'] : requestData.getBodyValue('photo') != null ? requestData.getBodyValue('photo') : ''
+        }
+    
+        await EmployeeModel.removeSingleFile(requestData, params.photo);
+        const connection = requestData.getConnection();
+        const queryString = Query(NAMESPACE.USER, 'updatePhoto', params);
+        const res = await connection.query(queryString);
+        return res;
+    } catch (e) {
+        Logger.error(e);
+        throw e;
+    }
+}
   
   module.exports = {
     selectUser,
@@ -226,5 +246,6 @@ const deleteUser = async (requestData) => {
     deleteProf,
     getEmployees,
     deleteEmployee,
-    updateEmployee
+    updateEmployee,
+    updatePhoto
   };

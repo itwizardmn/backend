@@ -163,6 +163,7 @@
         ie.seq, 
         ie.profile,
         ie.levels, 
+        ie.photo,
         it.team_name, 
         ie.pro_seq, 
         ip.pro_name, 
@@ -173,6 +174,15 @@
         AND ie.use_yn = 'Y'
         ORDER BY ie.sort ASC
     </select>
+
+    <update id="updatePhoto">
+        UPDATE iw_employees 
+        <set>
+            updated_date = now(),
+            <if test="file != null"> photo = #{file}</if>
+        </set>
+        WHERE seq = #{seq}
+    </update>
 
     <update id="deleteEmployee">
         UPDATE iw_employees
