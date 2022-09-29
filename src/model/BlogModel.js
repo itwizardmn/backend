@@ -6,14 +6,19 @@ const Query = require('../database/Mybatis');
 const { NAMESPACE, DB_RESULT, DB_FIELD_NAME } = require('../common/Constant');
 const { EXPECTATION_FAILED } = require('http-status-codes');
 
-const getBlogs = async (requestData, id = null) => {
-    let blogId = null;
+const getBlogs = async (requestData, id = null, lang = null) => {
+    let blogId = null, language = null;
     if(id != null) {
         blogId = id;
     }
 
+    if (lang != null) {
+        language = lang;
+    }
+
     const params = {
         blogSeq :  blogId,
+        lang    : language
       };
 
     try {

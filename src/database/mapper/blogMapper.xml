@@ -10,6 +10,9 @@
         <if test="blogSeq != null">
         AND blog_seq = #{blogSeq}
         </if>
+        <if test="lang != null">
+        AND lang = #{lang}
+        </if>
     </select>
 
     <insert id="insert">

@@ -18,8 +18,16 @@ const getBlogs = async (req, res) => {
 
     try {
 
+        const fieldList = [
+            'lang'
+        ];
+
+        // if (!requestData.hasAllMandatoryFields(fieldList)) {
+        //     return responseData.setResponseCode(RESPONSE_CODE.REQUIRED_FIELD);
+        // }
+
         await requestData.start(true);
-        const blogList = await BlogModel.getBlogs(requestData, requestData.getBodyValue('blogSeq'));
+        const blogList = await BlogModel.getBlogs(requestData, requestData.getBodyValue('blogSeq'), requestData.getBodyValue('lang'));
         responseData.setDataValue(RESPONSE_FIELD.DATA, blogList);
 
         if(blogList){

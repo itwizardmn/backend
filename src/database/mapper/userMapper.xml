@@ -192,22 +192,22 @@
     </update>
 
     <update id="updateEmployeeCareer">
-        UPDATE iw_career
+        UPDATE iw_career as ic, iw_employees as ie
         <set>
-            personal=#{personal},
-            <if test="lastname != null"> lastname=#{lastname},</if>
-            <if test="firstname != null"> firstname=#{firstname},</if>
-            <if test="birthdate != null"> birthdate=#{birthdate},</if>
-            <if test="phone != null"> phone=#{phone},</if>
-            <if test="register != null"> register=#{register},</if>
-            <if test="address != null"> address=#{address},</if>
-            <if test="family != null"> family=#{family},</if>
-            <if test="edu != null"> edu=#{edu},</if>
-            <if test="lang != null"> lang=#{lang},</if>
-            <if test="experience != null"> experience=#{experience},</if>
-            <if test="skill != null"> skill=#{skill},</if>
+            ic.personal=#{personal},
+            <if test="lastname != null"> ic.lastname=#{lastname},</if>
+            <if test="firstname != null"> ic.firstname=#{firstname}, ie.name = #{firstname},</if>
+            <if test="birthdate != null"> ic.birthdate=#{birthdate},</if>
+            <if test="phone != null"> ic.phone=#{phone}, ie.phone = #{phone},</if>
+            <if test="register != null"> ic.register=#{register},</if>
+            <if test="address != null"> ic.address=#{address},</if>
+            <if test="family != null"> ic.family=#{family},</if>
+            <if test="edu != null"> ic.edu=#{edu},</if>
+            <if test="lang != null"> ic.lang=#{lang},</if>
+            <if test="experience != null"> ic.experience=#{experience},</if>
+            <if test="skill != null"> ic.skill=#{skill},</if>
         </set>
-        WHERE seq = #{seq}
+        WHERE ie.career_seq = ic.seq AND ic.seq = #{seq}
     </update>
 
     <update id="updateEmployee">
