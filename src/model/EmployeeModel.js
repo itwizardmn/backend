@@ -9,16 +9,18 @@ const fileDir = path.resolve(process.env.UPLOAD_DIR);
 
 const { NAMESPACE, DB_RESULT, DB_FIELD_NAME } = require('../common/Constant');
 
-const selectEmployee = async (requestData, email) => {
+const selectEmployee = async (requestData, email = null, seq = null, password = null) => {
   try {
 
     const params = {
-      ['email'] :  email
+      ['email']     : email,
+      ['seq']       : seq,
+      ['password']  : password
     };
 
     const connection = requestData.getConnection();
 
-    const queryString = Query(NAMESPACE.USER,'loginEmployee', params);
+    const queryString = Query(NAMESPACE.USER,'loginEmployee', params);    
     const [dataSet] = await connection.query(queryString);
     return dataSet[DB_RESULT.ROW_FIRST];
   }
@@ -153,12 +155,18 @@ const insertVote = async (requestData) => {
   }
 }
 
-const selectVotes = async (requestData) => {
+const selectVotes = async (requestData, admin = null) => {
   try {
+
     const seq = requestData.payload.seq;
-    const params = {
-      ['seq'] : seq
-    };
+    let params;
+    if (admin === null) {
+      params = {
+        ['seq'] : seq
+      };
+    }
+
+    console.log('==========', admin);
 
     const connection = requestData.getConnection();
     const statement = Query(NAMESPACE.USER,'selectVotes', params);
@@ -315,5 +323,5 @@ module.exports = {
   selectVotes,
   getProfessions,
   updateStatusCareer,
-  removeSingleFile
+  removeSingleFile,
 };

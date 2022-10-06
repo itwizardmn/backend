@@ -1,8 +1,10 @@
 const { getLogger } = require('../lib/logger');
 const Logger = getLogger({ title: 'user model' });
 const EmployeeModel = require('./EmployeeModel');
+const MailModel = require('./MailModel');
 const Query = require('../database/Mybatis');
 const path = require('path');
+const bcrypt = require('bcrypt');
 
 const { NAMESPACE, DB_RESULT, DB_FIELD_NAME } = require('../common/Constant');
 
@@ -234,6 +236,88 @@ const deleteUser = async (requestData) => {
         throw e;
     }
 }
+
+const checkEmployee = async (requestData) => {
+  try {
+    const seq = requestData.payload.seq;
+    const current = requestData.getBodyValue('current');
+    const created = requestData.getBodyValue('created');
+    const params = {
+      ['seq']       : seq,
+      ['password']  : null
+    }
+
+    const emp = await EmployeeModel.selectEmployee(requestData, null, seq, current);
+    if (!emp) {
+      return 401;
+    }
+
+    let password = await bcrypt.hash(current, emp.salt);
+    if (password != emp.password) {
+      return 401;
+    }
+
+    params.password =  await bcrypt.hash(created, emp.salt);
+
+    const connection = requestData.getConnection();
+    const queryString = Query(NAMESPACE.USER, 'updateEmployeePassword', params);
+    const res = await connection.query(queryString);
+    return res;
+
+  } catch (e) {
+    console.log(e);
+    Logger.error(e);
+    throw e;
+  }
+} 
+
+const forgotPassEmp = async (requestData) => {
+  
+  try {
+    const email = requestData.getBodyValue('email');
+
+    if (!email) {
+      return;
+    }
+    const emp = await EmployeeModel.selectEmployee(requestData, email);
+    if (!emp) {
+      return 401;
+    }
+
+    const params = {
+      seq: emp.seq,
+      salt: emp.salt
+    };
+
+    const randText = Math.random().toString(36).slice(-8);
+    let password = await bcrypt.hash(randText, params.salt);
+
+    params.password = password;
+
+    await MailModel.sendPassword(email, randText);
+    const connection = requestData.getConnection();
+    const queryString = Query(NAMESPACE.USER, 'updateEmployeePassword', params);
+    const res = await connection.query(queryString);
+    return res;
+
+  } catch (e) {
+    console.log(e);
+      Logger.error(e);
+      throw e;
+  }
+}
+
+const updateFeedback = async (requestData) => {
+  const params = {
+    seq: requestData.getBodyValue('seq'),
+    status: requestData.getBodyValue('status')
+  };
+
+  const connection = requestData.getConnection();
+  const queryString = Query(NAMESPACE.USER, 'updateFeedBack', params);
+  const res = await connection.query(queryString);
+  return res;
+}
   
   module.exports = {
     selectUser,
@@ -247,5 +331,8 @@ const deleteUser = async (requestData) => {
     getEmployees,
     deleteEmployee,
     updateEmployee,
-    updatePhoto
+    updatePhoto,
+    forgotPassEmp,
+    checkEmployee,
+    updateFeedback
   };

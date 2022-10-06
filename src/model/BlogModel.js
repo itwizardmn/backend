@@ -23,7 +23,6 @@ const getBlogs = async (requestData, id = null, lang = null) => {
 
     try {
         const connection = requestData.getConnection();
-        console.log('==============', connection);
         const queryString = Query(NAMESPACE.BLOG, 'getBlogs', params);
         const [dataSet] = await connection.execute(queryString);
         
@@ -44,6 +43,7 @@ const insertBlog = async (requestData) => {
         thumbnailSeq :  requestData.getBodyValue('thumbnailSeq') != null ? requestData.getBodyValue('thumbnailSeq') : '',
         url :  requestData.getBodyValue('url') != null ? requestData.getBodyValue('url') : '',
         contentType :  requestData.getBodyValue('contentType') != null ? requestData.getBodyValue('contentType') : '',
+        lang :  requestData.getBodyValue('lang') != null ? requestData.getBodyValue('lang') : '',
     };
 
     try {

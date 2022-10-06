@@ -24,7 +24,7 @@ const PreInterceptor = async (req, res, next) => {
         if (parts.length <= 0) {
             return next();
         } else {
-            const required = ['update-profile', 'employee-personal-info', 'add-vote', 'update-resume', 'get-votes'];
+            const required = ['update-profile', 'employee-personal-info', 'add-vote', 'update-resume', 'get-votes', 'change-password'];
             if (!required.includes(parts[parts.length - 1])) {
                 return next();
             } else {

@@ -14,5 +14,7 @@ router.post('/add-vote', controller.addVote);
 router.get('/get-votes', controller.selectVotes);
 router.get('/get-professions', controller.getProfessions);
 router.get('/employees', controller.getEmployees);
+router.post('/forgot-password', controller.forgotPassEmp);
+router.put('/change-password', controller.changeCurrentPassword);
 
 module.exports = router;

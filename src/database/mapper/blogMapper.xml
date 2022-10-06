@@ -13,6 +13,7 @@
         <if test="lang != null">
         AND lang = #{lang}
         </if>
+    ORDER BY blog_seq DESC
     </select>
 
     <insert id="insert">
@@ -27,6 +28,7 @@
         , created_by
         , url
         , contentType
+        , lang
         )
         VALUES
         ( #{blogSeq}
@@ -39,6 +41,7 @@
         , ''
         , #{url}
         , #{contentType}
+        , #{lang}
         )
     </insert>
 

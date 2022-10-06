@@ -19,6 +19,10 @@ const UserModel = require('../model/UserModel');
 const EmployeeModel = require('../model/EmployeeModel');
 const FileModel = require('../model/FileModel');
 
+const xl = require('excel4node');
+const wb = new xl.Workbook();
+const ws = wb.addWorksheet('Worksheet Name');
+
 const login = async (req, res) => { 
 
     let   requestData     =  new RequestData(req);
@@ -328,13 +332,25 @@ const login = async (req, res) => {
         if (!requestData.isConnected()) {
             await requestData.start(true);
         }
-        const voteInfo = await EmployeeModel.selectVotes(requestData);
+
+        const voteInfo = await EmployeeModel.selectVotes(requestData, admin);
 
         if ( voteInfo.status == 'success') {
           responseData.setResponseCode(RESPONSE_CODE.SUCCESS);
           responseData.setDataValue(RESPONSE_FIELD.DATA, voteInfo.data);
         }
 
+      } else if(requestData.payload.userID) {
+        if (!requestData.isConnected()) {
+          await requestData.start(true);
+        }
+
+        const voteInfo = await EmployeeModel.selectVotes(requestData, 'admin');
+
+        if ( voteInfo.status == 'success') {
+          responseData.setResponseCode(RESPONSE_CODE.SUCCESS);
+          responseData.setDataValue(RESPONSE_FIELD.DATA, voteInfo.data);
+        }
       } else {
         await requestData.error();
         responseData.setResponseCode(RESPONSE_CODE.CONTACT_ADMIN);
@@ -649,6 +665,110 @@ const login = async (req, res) => {
     }
   }
 
+
+  const forgotPassEmp = async (req, res) => {
+    let requestData = new RequestData(req);
+    let responseData = new ResponseData(requestData);
+
+    try {
+      const fieldList = [ 'email' ];
+      if (!requestData.hasAllMandatoryFields(fieldList)) {
+        return responseData.setResponseCode(RESPONSE_CODE.REQUIRED_FIELD);
+      }
+
+      if (!requestData.isConnected()) {
+        await requestData.start(true);
+      }
+    
+      const result = await UserModel.forgotPassEmp(requestData);
+      if (result === 401) {
+        responseData.setResponseCode(RESPONSE_CODE.NO_DATA);
+      }
+      else if (result) {
+        responseData.setResponseCode(RESPONSE_CODE.SUCCESS);
+      } else {
+        responseData.setResponseCode(RESPONSE_CODE.DB_ERROR);
+      }
+
+    } catch (e) {
+      console.log(e);
+      Logger.debug(e);
+      await requestData.error();
+      responseData.setResponseCode(RESPONSE_CODE.CONTACT_ADMIN);
+    } finally {
+        await requestData.end(responseData.isSuccess());
+        res.send(responseData);
+    }
+  }
+
+  const changeCurrentPassword = async (req, res) => {
+    let requestData = new RequestData(req);
+    let responseData = new ResponseData(requestData);
+
+    try {
+      const fieldList = [ 'current', 'created', 'repeated' ];
+      if (!requestData.hasAllMandatoryFields(fieldList)) {
+        return responseData.setResponseCode(RESPONSE_CODE.REQUIRED_FIELD);
+      }
+
+      if (!requestData.isConnected()) {
+        await requestData.start(true);
+      }
+
+      const result = await UserModel.checkEmployee(requestData);
+      if (result === 401) {
+        responseData.setResponseCode(RESPONSE_CODE.NO_DATA);
+      }
+      else if (result) {
+        responseData.setResponseCode(RESPONSE_CODE.SUCCESS);
+      } else {
+        responseData.setResponseCode(RESPONSE_CODE.DB_ERROR);
+      }
+
+    } catch (e) {
+      console.log(e);
+      Logger.debug(e);
+      await requestData.error();
+      responseData.setResponseCode(RESPONSE_CODE.CONTACT_ADMIN);
+    } finally {
+        await requestData.end(responseData.isSuccess());
+        res.send(responseData);
+    }
+  }
+
+  const updateFeedback = async (req, res) => {
+    let requestData = new RequestData(req);
+    let responseData = new ResponseData(requestData);
+
+    try {
+      const fieldList = [ 'seq', 'status' ];
+      if (!requestData.hasAllMandatoryFields(fieldList)) {
+        return responseData.setResponseCode(RESPONSE_CODE.REQUIRED_FIELD);
+      }
+
+      if (!requestData.isConnected()) {
+        await requestData.start(true);
+      }
+
+      const result = await UserModel.updateFeedback(requestData);
+
+      if (result) {
+        responseData.setResponseCode(RESPONSE_CODE.SUCCESS);
+      } else {
+        responseData.setResponseCode(RESPONSE_CODE.DB_ERROR);
+      }
+
+    } catch (e) {
+      console.log(e);
+      Logger.debug(e);
+      await requestData.error();
+      responseData.setResponseCode(RESPONSE_CODE.CONTACT_ADMIN);
+    } finally {
+        await requestData.end(responseData.isSuccess());
+        res.send(responseData);
+    }
+  }
+
   module.exports = {
     login,
     empLogin,
@@ -667,5 +787,8 @@ const login = async (req, res) => {
     getEmployees,
     deleteEmployee,
     updateEmployee,
-    updatePhoto
+    updatePhoto,
+    forgotPassEmp,
+    changeCurrentPassword,
+    updateFeedback
   };

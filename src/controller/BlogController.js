@@ -56,7 +56,8 @@ const insertBlog = async (req, res) => {
             'title',
             'content',
             'isVisible',
-            'url'
+            'url',
+            'lang'
         ];
         // if (!requestData.hasAllMandatoryFields(fieldList)) {
         //     return responseData.setResponseCode(RESPONSE_CODE.REQUIRED_FIELD);
