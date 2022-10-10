@@ -1,4 +1,5 @@
 require('dotenv').config(({path : (__dirname + '/config/.env')}));
+const apicache = require('apicache');
 
 const express = require('express');
 const cors = require('cors');
@@ -13,6 +14,7 @@ const YAML = require('yamljs');
 const PreInterceptor = require('./middleware/PreInterceptor');
 const PostInteceptor = require('./middleware/PostInterceptor');
 const traceLogger = config.traceLogger;
+let cache = apicache.middleware;
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -31,6 +33,7 @@ app.use(cors({
 app.use(PreInterceptor);
 app.use(PostInteceptor);
 
+app.use(cache('5 minutes'));
 app.use(routes);
 //app.use(expressFileupload);
 
