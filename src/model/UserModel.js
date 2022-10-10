@@ -180,10 +180,16 @@ const deleteUser = async (requestData) => {
     }
   }
 
-  const getEmployees = async (requestData) => {
+  const getEmployees = async (requestData, admin = null) => {
+    let params = {
+      all: null
+    };
+    if (admin) {
+      params.all = true;
+    } 
+    console.log('======', params);
     const connection = requestData.getConnection();
-    const statement = Query(NAMESPACE.USER,'getEmployees');
-    console.log(statement);
+    const statement = Query(NAMESPACE.USER,'getEmployees', params);
     const [dataSet] = await connection.query(statement);
     return dataSet;
   }
@@ -195,6 +201,17 @@ const deleteUser = async (requestData) => {
 
     const connection = requestData.getConnection();
     const statement = Query(NAMESPACE.USER,'deleteEmployee', params);
+    const res = await connection.query(statement);
+    return res;
+  }
+
+  const recoverEmployee = async (requestData) => {
+    const params = {
+      seq : requestData.getBodyValue('seq')
+    };
+
+    const connection = requestData.getConnection();
+    const statement = Query(NAMESPACE.USER,'recoverEmployee', params);
     const res = await connection.query(statement);
     return res;
   }
@@ -334,5 +351,6 @@ const updateFeedback = async (requestData) => {
     updatePhoto,
     forgotPassEmp,
     checkEmployee,
-    updateFeedback
+    updateFeedback,
+    recoverEmployee
   };

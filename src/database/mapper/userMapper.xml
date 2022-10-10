@@ -186,6 +186,8 @@
         ip.pro_name, 
         ie.sort,
         ic.experience,
+        ie.is_deleted,
+        ie.use_yn,
         ic.skill,
         ic.lang
         from iw_employees ie
@@ -195,9 +197,18 @@
             on ip.seq = ie.pro_seq 
         left join iw_career ic 
             on ic.seq = ie.career_seq
-        WHERE ie.is_deleted = 'N'
-        AND ie.use_yn = 'Y'
+        WHERE
+        <choose>
+            <when test="all == null or all == ''">
+                ie.is_deleted = 'N'
+                AND ie.use_yn = 'Y'
+            </when>
+            <otherwise>
+                ie.seq > 0
+            </otherwise>
+        </choose>
 
+        ORDER BY ie.sort ASC
     </select>
 
     <update id="updatePhoto">
@@ -213,6 +224,13 @@
         UPDATE iw_employees
         SET is_deleted = 'Y',
         use_yn = 'N'
+        WHERE seq = #{seq}
+    </update>
+
+    <update id="recoverEmployee">
+        UPDATE iw_employees
+        SET is_deleted = 'N',
+        use_yn = 'Y'
         WHERE seq = #{seq}
     </update>
 

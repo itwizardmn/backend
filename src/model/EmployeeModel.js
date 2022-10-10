@@ -166,14 +166,13 @@ const selectVotes = async (requestData, admin = null) => {
       };
     }
 
-    console.log('==========', admin);
-
     const connection = requestData.getConnection();
     const statement = Query(NAMESPACE.USER,'selectVotes', params);
     const res = await connection.query(statement);
     return { status: 'success',  data: res[DB_RESULT.ROW_FIRST]};
 
   } catch (e) {
+    console.log(e);
     Logger.error(e.stack);
     throw e;
   }

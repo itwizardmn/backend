@@ -333,8 +333,7 @@ const login = async (req, res) => {
             await requestData.start(true);
         }
 
-        const voteInfo = await EmployeeModel.selectVotes(requestData, admin);
-
+        const voteInfo = await EmployeeModel.selectVotes(requestData);
         if ( voteInfo.status == 'success') {
           responseData.setResponseCode(RESPONSE_CODE.SUCCESS);
           responseData.setDataValue(RESPONSE_FIELD.DATA, voteInfo.data);
@@ -579,22 +578,74 @@ const login = async (req, res) => {
     }
   }
 
+  const getAllEmployee = async (req, res) => {
+    let requestData = new RequestData(req);
+    let responseData = new ResponseData(requestData);
+    try {
+      if (!requestData.isConnected()) {
+            await requestData.start(true);
+        }
+      const result = await UserModel.getEmployees(requestData, true);
+      if (result) {
+        responseData.setResponseCode(RESPONSE_CODE.SUCCESS);
+        responseData.setDataValue(RESPONSE_FIELD.DATA, result);
+      } else {
+        responseData.setResponseCode(RESPONSE_CODE.DB_ERROR);
+      }
+    } catch (e) {
+      Logger.debug(e);
+      await requestData.error();
+      responseData.setResponseCode(RESPONSE_CODE.CONTACT_ADMIN);
+    } finally {
+        await requestData.end(responseData.isSuccess());
+        res.send(responseData);
+    }
+  }
+
   const getEmployees = async (req, res) => {
     let requestData = new RequestData(req);
     let responseData = new ResponseData(requestData);
-
     try {
       if (!requestData.isConnected()) {
             await requestData.start(true);
         }
       const result = await UserModel.getEmployees(requestData);
       if (result) {
-        console.log(result.data,'=====');
         responseData.setResponseCode(RESPONSE_CODE.SUCCESS);
         responseData.setDataValue(RESPONSE_FIELD.DATA, result);
       } else {
         responseData.setResponseCode(RESPONSE_CODE.DB_ERROR);
       }
+    } catch (e) {
+      Logger.debug(e);
+      await requestData.error();
+      responseData.setResponseCode(RESPONSE_CODE.CONTACT_ADMIN);
+    } finally {
+        await requestData.end(responseData.isSuccess());
+        res.send(responseData);
+    }
+  }
+
+  const recoverEmployee = async (req, res) => {
+    let requestData = new RequestData(req);
+    let responseData = new ResponseData(requestData);
+
+    try { 
+      const fieldList = [ 'seq' ];
+      if (!requestData.hasAllMandatoryFields(fieldList)) {
+        return responseData.setResponseCode(RESPONSE_CODE.REQUIRED_FIELD);
+      }
+
+      if (!requestData.isConnected()) {
+            await requestData.start(true);
+        }
+      const result = await UserModel.recoverEmployee(requestData);
+      if (result) {
+        responseData.setResponseCode(RESPONSE_CODE.SUCCESS);
+      } else {
+        responseData.setResponseCode(RESPONSE_CODE.DB_ERROR);
+      }
+
     } catch (e) {
       Logger.debug(e);
       await requestData.error();
@@ -790,5 +841,7 @@ const login = async (req, res) => {
     updatePhoto,
     forgotPassEmp,
     changeCurrentPassword,
-    updateFeedback
+    updateFeedback,
+    getAllEmployee,
+    recoverEmployee
   };

@@ -13,5 +13,7 @@ router.put('/update-employee', controller.updateEmployee);
 router.post('/update-photo', fileUpload.uploadProfilePic(), controller.updatePhoto);
 router.get('/get-votes', controller.selectVotes);
 router.put('/update-feedback', controller.updateFeedback);
+router.get('/employees', controller.getAllEmployee);
+router.put('/recover-employee',  controller.recoverEmployee);
 
 module.exports = router;
