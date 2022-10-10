@@ -60,7 +60,7 @@ const insertBlog = async (requestData) => {
 
 
 const remove = async (requestData) => {
-    params = { blog_seq : requestData.getBodyValue('blogSeq')};
+    params = { blog_seq : requestData.getBodyValue('blog_seq')};
 
     try {
         const connection = requestData.getConnection();
