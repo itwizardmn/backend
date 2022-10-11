@@ -2,7 +2,7 @@ const { getLogger } = require('../lib/logger');
 const Logger = getLogger({ title: 'blog controller' });
 
 const path = require('path');
-
+var axios = require('axios');
 const RequestData = require('../common/RequestData');
 const ResponseData = require('../common/ResponseData');
 const { RESPONSE_CODE, RESPONSE_FIELD  } = require('../common/ResponseConst');
@@ -130,8 +130,43 @@ const remove = async (req, res) => {
         res.send(responseData);
     }
 }
+
+
+const getYoutubeVideos = async (req, res) => {
+    let requestData = new RequestData(req);
+    let responseData = new ResponseData(requestData);
+    try {
+        var conf = {
+            method: 'get',
+            url: 'https://www.googleapis.com/youtube/v3/search?key=' +process.env.YOUTUBEAPIKEY+ '&channelId=' +process.env.YOUTUBECHANNELID+ '&part=snippet,id&order=date&maxResults=18',
+            headers: { }
+          };
+          
+        const data = await axios(conf)
+        .then(function (response) {
+            return response.data;
+        })
+        .catch(function (error) {
+            return false;
+        });
+
+        if (data) {
+            responseData.setResponseCode(RESPONSE_CODE.SUCCESS);
+            responseData.setDataValue(RESPONSE_FIELD.DATA, data);
+        } else {
+            responseData.setResponseCode(RESPONSE_CODE.CONTACT_ADMIN);
+        }
+    } catch (error) {
+        
+    } finally {
+        await requestData.end(responseData.isSuccess());
+        res.send(responseData);
+    }
+}
+
 module.exports = {
     getBlogs,
     insertBlog,
-    remove
+    remove,
+    getYoutubeVideos
 }
