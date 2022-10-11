@@ -27,7 +27,6 @@ const loadFile = async (requestData, id = null) => {
         console.log(queryString);
 
         const [file] = await connection.query(queryString);
-        console.log('=============load==============', file);
         return file;
     } catch (e) {
         Logger.error(e);

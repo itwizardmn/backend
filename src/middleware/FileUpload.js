@@ -51,7 +51,8 @@ const storageProfile =
         }
         fileExt = path.extname(file.originalname||'').split('.');
         file.originalname = moment(new Date()).format('YYYYMMDDHHmmss') + '.' + fileExt[1];
-        file.filename = moment(new Date()).format('YYYYMMDDHHmmss')
+        file.filename = moment(new Date()).format('YYYYMMDDHHmmss');
+        console.log('file===============', file);
         callback(null, uploadDir);
     },
     imageOptions:{
@@ -73,7 +74,7 @@ function _imgFilter (req, file, cb) {
 
 const upload = multer({ storage: storage });
 const uploadImage = multer({ storage: storageResize, fileFilter: _imgFilter  });
-const uploadPicture = multer({ storage: storageProfile, fileFilter: _imgFilter });
+const uploadPicture = multer({ storage: storage, fileFilter: _imgFilter });
 
 module.exports = {
     uploadSingle,
