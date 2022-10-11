@@ -37,13 +37,17 @@ const loadFile = async (requestData, id = null) => {
 
 const insertFile = async (requestData) => {    
     try {
-        const fileName = requestData.getBodyValue('file').filename;
+        let fileName = requestData.getBodyValue('file').filename;
         const originalFileName = requestData.getBodyValue('file').originalname;
         const mimeType = requestData.getBodyValue('file').mimetype;
-        const size = requestData.getBodyValue('file').size;
+        const size = requestData.getBodyValue('file').size != null ? equestData.getBodyValue('file').size : 0;
         const fileType = requestData.getBodyValue('file').fieldname;
         const fileExt = path.extname(originalFileName).split('.').pop();
         const downloadUrl = '/files/download/' + fileName + path.extname(originalFileName);
+
+        if(fileName){
+            fileName =  fileName.replace(".", "");
+        }
 
         const params = {
             fileName :  fileName,
