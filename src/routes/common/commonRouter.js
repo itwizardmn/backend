@@ -5,6 +5,6 @@ const router = express.Router();
 
 const controller = require('../../controller/CommonController');
 
-router.get('/download/:fileId?', controller.download, cache('1 day'));
+router.get('/download/:fileId?', cache('1 day'), controller.download);
 
 module.exports = router;
