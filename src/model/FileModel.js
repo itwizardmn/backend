@@ -40,7 +40,7 @@ const insertFile = async (requestData) => {
         let fileName = requestData.getBodyValue('file').filename;
         const originalFileName = requestData.getBodyValue('file').originalname;
         const mimeType = requestData.getBodyValue('file').mimetype;
-        const size = requestData.getBodyValue('file').size != null ? equestData.getBodyValue('file').size : 0;
+        const size = requestData.getBodyValue('file').size != null ? requestData.getBodyValue('file').size : 0;
         const fileType = requestData.getBodyValue('file').fieldname;
         const fileExt = path.extname(originalFileName).split('.').pop();
         const downloadUrl = '/files/download/' + fileName + path.extname(originalFileName);
