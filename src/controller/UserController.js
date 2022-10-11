@@ -742,7 +742,6 @@ const login = async (req, res) => {
       }
 
     } catch (e) {
-      console.log(e);
       Logger.debug(e);
       await requestData.error();
       responseData.setResponseCode(RESPONSE_CODE.CONTACT_ADMIN);

@@ -37,7 +37,7 @@ let storageResize = sharpMulter ({
     imageOptions:{
         fileFormat: fileExt,
         quality: 30,
-        resize: { width: 1920, height: 1080 },
+        // resize: { width: 1920, height: 1080 },
     }
  });
 
@@ -56,8 +56,8 @@ const storageProfile =
     },
     imageOptions:{
         fileFormat: fileExt,
-        quality: 50,
-        resize: { width: 500, height: 500 },
+        quality: 40,
+        // resize: { width: 500, height: 500 },
     }
  });
 const limits = {

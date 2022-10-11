@@ -14,8 +14,6 @@ const YAML = require('yamljs');
 const PreInterceptor = require('./middleware/PreInterceptor');
 const PostInteceptor = require('./middleware/PostInterceptor');
 const traceLogger = config.traceLogger;
-const apicache = require('apicache');
-let cache = apicache.middleware;
 // let cache = apicache.middleware;
 
 
