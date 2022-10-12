@@ -181,6 +181,8 @@
         ie.profile,
         ie.levels, 
         ie.photo,
+        ie.phone,
+        ie.email,
         it.team_name, 
         ie.pro_seq, 
         ip.pro_name, 

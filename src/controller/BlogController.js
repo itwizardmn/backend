@@ -140,13 +140,15 @@ const getYoutubeVideos = async (req, res) => {
             method: 'get',
             url: 'https://www.googleapis.com/youtube/v3/search?key=' +process.env.YOUTUBEAPIKEY+ '&channelId=' +process.env.YOUTUBECHANNELID+ '&part=snippet,id&order=date&maxResults=18',
             headers: { }
-          };
-          
+        };
+        
+        console.log('https://www.googleapis.com/youtube/v3/search?key=' +process.env.YOUTUBEAPIKEY+ '&channelId=' +process.env.YOUTUBECHANNELID+ '&part=snippet,id&order=date&maxResults=18', '===============');
         const data = await axios(conf)
         .then(function (response) {
             return response.data;
         })
         .catch(function (error) {
+            console.log(error);
             return false;
         });
 
@@ -156,8 +158,10 @@ const getYoutubeVideos = async (req, res) => {
         } else {
             responseData.setResponseCode(RESPONSE_CODE.CONTACT_ADMIN);
         }
-    } catch (error) {
-        
+    } catch (e) {
+        console.log(e);
+        Logger.debug(e);
+        await requestData.error();
     } finally {
         await requestData.end(responseData.isSuccess());
         res.send(responseData);
