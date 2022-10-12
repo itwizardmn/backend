@@ -273,11 +273,9 @@
     </update>
 
     <update id="updateProfession">
-        UPDATE iw_professions
-        <set>
-            <if test="pro_name != null"> pro_name=#{pro_name}</if>
-            <if test="pro_name_ko != null"> , pro_name_ko=#{pro_name_ko}</if>
-        </set>
+        UPDATE iw_professions SET
+        pro_name=#{pro_name},
+        pro_name_ko=#{pro_name_ko}
         WHERE seq = #{seq}
     </update>
 

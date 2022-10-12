@@ -138,6 +138,7 @@ const deleteUser = async (requestData) => {
       const connection = requestData.getConnection();
   
       const statement = Query(NAMESPACE.USER,'updateProfession', params);
+      console.log('=====params======', statement);
       const res = await connection.query(statement);
   
       return res[DB_RESULT.ROW_FIRST][DB_RESULT.AFFECTED_ROWS] === DB_RESULT.ONE;
