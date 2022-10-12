@@ -492,7 +492,7 @@ const login = async (req, res) => {
     let responseData = new ResponseData(requestData);
 
     try {
-      const fieldList = [ 'seq', 'pro_name' ];
+      const fieldList = [ 'seq', 'pro_name', 'pro_name_ko' ];
       if (!requestData.hasAllMandatoryFields(fieldList)) {
         return responseData.setResponseCode(RESPONSE_CODE.REQUIRED_FIELD);
       }

@@ -131,7 +131,8 @@ const deleteUser = async (requestData) => {
     try {
       const params = {
         seq : requestData.getBodyValue('seq'),
-        pro_name : requestData.getBodyValue('pro_name')
+        pro_name : requestData.getBodyValue('pro_name'),
+        pro_name_ko : requestData.getBodyValue('pro_name_ko')
       };
 
       const connection = requestData.getConnection();
