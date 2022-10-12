@@ -282,8 +282,8 @@
 
     <insert id="insertProfession">
     INSERT INTO iw_professions
-    ( pro_name )
-    VALUES ( #{pro_name})
+    ( pro_name, pro_name_ko )
+    VALUES ( #{pro_name}, #{ko_name})
     </insert>
 
     <update id="deleteProfession">

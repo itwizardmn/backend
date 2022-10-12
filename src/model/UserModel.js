@@ -150,7 +150,8 @@ const deleteUser = async (requestData) => {
   const addProfession = async (requestData) => {
     try {
       const params = {
-        pro_name : requestData.getBodyValue('pro_name')
+        pro_name : requestData.getBodyValue('pro_name'),
+        ko_name : requestData.getBodyValue('ko_name'),
       };
 
       const connection = requestData.getConnection();
