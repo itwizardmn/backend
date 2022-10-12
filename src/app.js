@@ -15,9 +15,10 @@ const PreInterceptor = require('./middleware/PreInterceptor');
 const PostInteceptor = require('./middleware/PostInterceptor');
 const traceLogger = config.traceLogger;
 // let cache = apicache.middleware;
+const CommonController = require('./controller/CommonController');
+CommonController.updateYtbConts();
 
 
-// app.use(cache('1 day'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 

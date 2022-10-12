@@ -58,6 +58,17 @@ const insertBlog = async (requestData) => {
     }
 }
 
+const getYTBContents = async (requestData) => {
+    try {
+        const connection = requestData.getConnection();
+        const queryString = Query(NAMESPACE.BLOG, 'getYTBConts');
+        const [dataSet] = await connection.execute(queryString);
+        return dataSet;
+    } catch (e) {
+        Logger.error(e);
+    }
+}
+
 
 const remove = async (requestData) => {
     params = { blog_seq : requestData.getBodyValue('blog_seq')};
@@ -76,5 +87,6 @@ const remove = async (requestData) => {
 module.exports = {
     getBlogs,
     insertBlog,
-    remove
+    remove,
+    getYTBContents
 }

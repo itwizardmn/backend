@@ -136,27 +136,16 @@ const getYoutubeVideos = async (req, res) => {
     let requestData = new RequestData(req);
     let responseData = new ResponseData(requestData);
     try {
-        var conf = {
-            method: 'get',
-            url: 'https://www.googleapis.com/youtube/v3/search?key=' +process.env.YOUTUBEAPIKEY+ '&channelId=' +process.env.YOUTUBECHANNELID+ '&part=snippet,id&order=date&maxResults=18',
-            headers: { }
-        };
-        
-        console.log('https://www.googleapis.com/youtube/v3/search?key=' +process.env.YOUTUBEAPIKEY+ '&channelId=' +process.env.YOUTUBECHANNELID+ '&part=snippet,id&order=date&maxResults=18', '===============');
-        const data = await axios(conf)
-        .then(function (response) {
-            return response.data;
-        })
-        .catch(function (error) {
-            console.log(error);
-            return false;
-        });
+        if (!requestData.isConnected()) {
+            await requestData.start(true);
+        }
 
-        if (data) {
+        const result = await BlogModel.getYTBContents(requestData);
+        if (result) {
+            responseData.setDataValue('data', result);
             responseData.setResponseCode(RESPONSE_CODE.SUCCESS);
-            responseData.setDataValue(RESPONSE_FIELD.DATA, data);
         } else {
-            responseData.setResponseCode(RESPONSE_CODE.CONTACT_ADMIN);
+            responseData.setResponseCode(RESPONSE_CODE.DB_ERROR);
         }
     } catch (e) {
         console.log(e);

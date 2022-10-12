@@ -16,6 +16,24 @@
     ORDER BY blog_seq DESC
     </select>
 
+    <insert id="addYTBConts">
+        INSERT IGNORE 
+        INTO iw_ytb_conts 
+        (video_id, title, thumbnail, publish_date)
+        VALUES
+        ${query}
+    </insert>
+    <select id="getYTBConts">
+        SELECT video_id, title, thumbnail
+        FROM iw_ytb_conts
+        WHERE
+        is_deleted = 'N'
+        AND 
+        use_yn = 'Y'
+        ORDER BY publish_date DESC
+        LIMIT 21
+    </select>
+
     <insert id="insert">
         INSERT INTO iw_blogs
         ( blog_seq

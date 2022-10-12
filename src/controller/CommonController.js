@@ -6,10 +6,12 @@ const Logger = getLogger({ title: 'common controller' });
 const RequestData = require('../common/RequestData');
 const ResponseData = require('../common/ResponseData');
 const { RESPONSE_CODE, RESPONSE_FIELD  } = require('../common/ResponseConst');
+const Query = require('../database/Mybatis');
+const { NAMESPACE, DB_RESULT, DB_FIELD_NAME } = require('../common/Constant');
 const fileDir = path.resolve(process.env.UPLOAD_DIR);
 const fileUpload = require('../middleware/FileUpload');
 const baseDir = path.resolve(process.env.UPLOAD_DIR) + '/';
-
+var axios = require('axios');
 const FileModel = require('../model/FileModel');
 
 const upload = async (req, res) => {
@@ -89,7 +91,46 @@ const download = async (req, res) => {
     }
 };
 
+const downloadYtbConts = async () => {
+    let requestData = new RequestData();
+    let responseData = new ResponseData(requestData);
+    let queryVal = '';
+    var conf = {
+        method: 'get',
+        url: 'https://www.googleapis.com/youtube/v3/search?key=' +process.env.YOUTUBEAPIKEY+ '&channelId=' +process.env.YOUTUBECHANNELID+ '&part=snippet,id&maxResults=100',
+        headers: { }
+    };
+    await requestData.start(true);
+    await axios(conf)
+    .then(data => {
+        const obj = data.data.items;
+        obj.forEach(elm => {
+            if (elm.id.videoId) {
+                queryVal += queryVal === '' ? `('${elm.id.videoId}', '${elm.snippet.title}', '${elm.snippet.thumbnails.high.url}', '${elm.snippet.publishedAt}')` : `, ('${elm.id.videoId}', '${elm.snippet.title}', '${elm.snippet.thumbnails.high.url}', '${elm.snippet.publishedAt}')`;
+            }
+        });
+    });
+
+    const params = {  query: queryVal };
+    const connection = requestData.getConnection();
+    const queryString = Query(NAMESPACE.BLOG, 'addYTBConts', params);
+    const res = await connection.execute(queryString);
+    await requestData.end(responseData.isSuccess());    
+    return res;
+}
+
+let downContsInterval = null;
+
+const updateYtbConts = () => {
+    downloadYtbConts();
+
+    downContsInterval = setInterval(() => {
+        downloadYtbConts();
+    }, 86400000);
+}
+
 module.exports = {
     upload,
     download,
+    updateYtbConts
 };
