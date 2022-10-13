@@ -31,7 +31,7 @@
         AND 
         use_yn = 'Y'
         ORDER BY publish_date DESC
-        LIMIT 21
+        LIMIT 9
     </select>
 
     <insert id="insert">
