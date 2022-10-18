@@ -21,6 +21,9 @@
             <if test="seq != null and seq != ''">
             AND seq = #{seq}
             </if>
+            <if test="lang != null and lang != ''">
+            AND lang = #{lang}
+            </if>
     </select>
 
     <insert id="insert">
@@ -49,6 +52,7 @@
         , requirement
         , roles
         , about
+        , lang
         )
         VALUES
         ( #{title}
@@ -58,6 +62,7 @@
         , #{requirement}
         , #{roles}
         , #{about}
+        , #{lang}
         )
     </insert>
 
@@ -70,7 +75,8 @@
         salary = #{salary},
         requirement = #{requirement},
         roles = #{roles},
-        about = #{about}
+        about = #{about},
+        lang = #{lang}
         WHERE seq = #{seq}
     </update>
 

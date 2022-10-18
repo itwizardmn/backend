@@ -218,6 +218,7 @@ const getLists = async (req, res) => {
         res.send(responseData);
     }
 }
+
 module.exports = {
     getProjectsByTeam,
     insertProject,

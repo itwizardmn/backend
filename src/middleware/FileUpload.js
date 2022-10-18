@@ -18,7 +18,6 @@ let storage = multer.diskStorage({
         callback(null, uploadDir);
     },
     filename: (req, file, callback) => {
-        console.log(file.originalname);
         return callback(null, moment(new Date()).format('YYYYMMDDHHmmss'));
     }
 });
@@ -52,7 +51,6 @@ const storageProfile =
         fileExt = path.extname(file.originalname||'').split('.');
         file.originalname = moment(new Date()).format('YYYYMMDDHHmmss') + '.' + fileExt[1];
         file.filename = moment(new Date()).format('YYYYMMDDHHmmss');
-        console.log('file===============', file);
         callback(null, uploadDir);
     },
     imageOptions:{

@@ -91,7 +91,8 @@ const addCareer  = async (requestData) => {
             salary:         career.salary,
             requirement:    career.requirement,
             roles:          career.role,
-            about:          career.about
+            about:          career.about,
+            lang:           career.lang
         };
 
         const connection = requestData.getConnection();
@@ -116,7 +117,8 @@ const updateCareer  = async (requestData) => {
             requirement:    career.requirement,
             roles:          career.role,
             about:          career.about,
-            seq:            career.seq
+            seq:            career.seq,
+            lang:           career.lang
         };
 
         const connection = requestData.getConnection();
@@ -134,6 +136,7 @@ const getCareers = async (requestData) => {
     console.log('===========', requestData);
     const params = {
         seq  : requestData.getBodyValue('seq') != null ? requestData.getBodyValue('seq') : '',
+        lang  : requestData.getBodyValue('lang') != null ? requestData.getBodyValue('lang') : '',
     };
 
     const connection = requestData.getConnection();
