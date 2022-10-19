@@ -186,6 +186,7 @@
         it.team_name, 
         ie.pro_seq, 
         ip.pro_name, 
+        ip.pro_name_ko,
         ie.sort,
         ic.experience,
         ie.is_deleted,
