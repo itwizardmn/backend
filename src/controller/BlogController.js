@@ -157,9 +157,37 @@ const getYoutubeVideos = async (req, res) => {
     }
 }
 
+const getBanners = async (req, res) => {
+    let requestData = new RequestData(req);
+    let responseData = new ResponseData(requestData);
+
+    try {
+        if (!requestData.isConnected()) {
+            await requestData.start(true);
+        }
+
+        const result = await BlogModel.getBanners(requestData);
+        if (result) {
+            responseData.setDataValue('data', result);
+            responseData.setResponseCode(RESPONSE_CODE.SUCCESS);
+        } else {
+            responseData.setResponseCode(RESPONSE_CODE.DB_ERROR);
+        }
+        
+    } catch (e) {
+        console.log(e);
+        Logger.debug(e);
+        await requestData.error();
+    } finally {
+        await requestData.end(responseData.isSuccess());
+        res.send(responseData);
+    }
+}
+
 module.exports = {
     getBlogs,
     insertBlog,
     remove,
-    getYoutubeVideos
+    getYoutubeVideos,
+    getBanners
 }

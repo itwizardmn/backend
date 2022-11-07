@@ -88,4 +88,14 @@
         WHERE blog_seq = #{blog_seq}
     </update>
 
+    <select id="selectBanners">
+        SELECT * from iw_banners
+        WHERE use_yn = 'Y'
+        AND is_deleted = 'N'
+        <if test="course != null and course != ''">
+        AND course = #{course}
+        </if>
+        ORDER BY created_at DESC
+    </select>
+
 </mapper>

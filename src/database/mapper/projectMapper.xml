@@ -19,6 +19,9 @@
     <select id="getLists">
         SELECT * FROM 
         ${db}
+        <if test="db == 'iw_career'">
+            ORDER BY seq DESC
+        </if>
     </select>
 
     <insert id="insert">

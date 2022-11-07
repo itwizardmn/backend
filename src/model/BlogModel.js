@@ -84,9 +84,27 @@ const remove = async (requestData) => {
     }
 }
 
+const getBanners = async (requestData) => {
+    const params  = {
+        course :  requestData.getBodyValue('course') != null ? requestData.getBodyValue('course') : ''
+    };
+
+    try {
+        const connection = requestData.getConnection();
+        const queryString = Query(NAMESPACE.BLOG, 'selectBanners', params);
+        const [dataSet] = await connection.execute(queryString);
+        
+        return dataSet;
+    } catch (e) {
+        Logger.error(e);
+        throw e;
+    }
+}
+
 module.exports = {
     getBlogs,
     insertBlog,
     remove,
-    getYTBContents
+    getYTBContents,
+    getBanners
 }
