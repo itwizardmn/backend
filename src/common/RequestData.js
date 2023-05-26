@@ -9,6 +9,7 @@ const {DATA_FIELD_NAME} = require('./Constant');
 const PayloadData = require('./PayloadData');
 
 class RequestData {
+
     constructor(requestData = {}) {
         this.connection = null;
         this.payload = new PayloadData()

@@ -294,12 +294,14 @@ const checkEmployee = async (requestData) => {
 const forgotPassEmp = async (requestData) => {
   
   try {
+    
     const email = requestData.getBodyValue('email');
-
+    
     if (!email) {
       return;
     }
     const emp = await EmployeeModel.selectEmployee(requestData, email);
+    
     if (!emp) {
       return 401;
     }
@@ -311,12 +313,12 @@ const forgotPassEmp = async (requestData) => {
 
     const randText = Math.random().toString(36).slice(-8);
     let password = await bcrypt.hash(randText, params.salt);
-
     params.password = password;
 
     await MailModel.sendPassword(email, randText);
     const connection = requestData.getConnection();
     const queryString = Query(NAMESPACE.USER, 'updateEmployeePassword', params);
+    console.log(email, '=====111', queryString);
     const res = await connection.query(queryString);
     return res;
 
