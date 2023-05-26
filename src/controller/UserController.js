@@ -720,6 +720,7 @@ const login = async (req, res) => {
   const forgotPassEmp = async (req, res) => {
     let requestData = new RequestData(req);
     let responseData = new ResponseData(requestData);
+
     try {
       const fieldList = [ 'email' ];
       if (!requestData.hasAllMandatoryFields(fieldList)) {
@@ -729,9 +730,8 @@ const login = async (req, res) => {
       if (!requestData.isConnected()) {
         await requestData.start(true);
       }
-
+    
       const result = await UserModel.forgotPassEmp(requestData);
-      
       if (result === 401) {
         responseData.setResponseCode(RESPONSE_CODE.NO_DATA);
       }

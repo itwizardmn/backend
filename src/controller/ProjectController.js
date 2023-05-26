@@ -78,6 +78,7 @@ const insertProject = async (req, res) => {
 
     let requestData = new RequestData(req);
     let responseData = new ResponseData(requestData);
+
     try {
         const fieldList = [
             'projectName',
