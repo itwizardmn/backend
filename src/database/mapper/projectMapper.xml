@@ -53,8 +53,8 @@
         UPDATE iw_projects 
         <set>
             updated_date = now(),
+            team_seq = #{team_seq},
             <if test="related_url != null"> related_url = #{related_url},</if>
-            <if test="team_seq != null"> team_seq = #{team_seq},</if>
             <if test="project_name != null"> project_name = #{project_name},</if>
             <if test="project_type != null"> project_type = #{project_type},</if>
         </set>

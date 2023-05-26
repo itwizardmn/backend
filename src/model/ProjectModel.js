@@ -87,9 +87,11 @@ const updateProperty = async (requestData) => {
             ['related_url']:    p.related_url,
             ['project_name']:   p.project_name
         }
-
         const connection = requestData.getConnection();
         const queryString = Query(NAMESPACE.PROJECT, 'updateProperty', params);
+
+        console.log(queryString, '===1111');
+
         const res = await connection.query(queryString);
         return res;
     } catch (e) {
