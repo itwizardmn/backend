@@ -249,6 +249,7 @@ const deleteUser = async (requestData) => {
         await EmployeeModel.removeSingleFile(requestData, params.photo);
         const connection = requestData.getConnection();
         const queryString = Query(NAMESPACE.USER, 'updatePhoto', params);
+        console.log('=====', queryString);
         const res = await connection.query(queryString);
         return res;
     } catch (e) {
